@@ -329,6 +329,61 @@ section {
 * { -webkit-tap-highlight-color: rgba(255,255,255,0.1); }
 button, a, .candle-wrapper, .wish-card, .gallery-item { -webkit-user-select: none; user-select: none; }
 
+/* ====== Music Button ====== */
+.music-btn {
+  position: fixed;
+  bottom: 2rem;
+  right: 1.5rem;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(196, 84, 122, 0.8);
+  border: 2px solid rgba(212, 168, 83, 0.6);
+  color: var(--gold);
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  z-index: 100;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.music-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 24px rgba(196, 84, 122, 0.4);
+}
+.music-btn:active {
+  transform: scale(0.95);
+}
+.music-btn.playing {
+  background: rgba(212, 168, 83, 0.8);
+  border-color: rgba(196, 84, 122, 0.6);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+.music-btn.playing #musicIcon {
+  animation: spin 2s linear infinite;
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 4px 16px rgba(212, 168, 83, 0.4); }
+  50% { box-shadow: 0 4px 24px rgba(212, 168, 83, 0.6); }
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@media (max-width: 600px) {
+  .music-btn {
+    width: 52px;
+    height: 52px;
+    font-size: 1.3rem;
+    bottom: 1.5rem;
+    right: 1rem;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -424,6 +479,14 @@ button, a, .candle-wrapper, .wish-card, .gallery-item { -webkit-user-select: non
   <h2>妈妈，我永远爱您</h2>
   <p style="color:var(--cream);opacity:.8;max-width:500px;margin-top:.5rem">谢谢您把我带到这个世界，用一生的温柔教会我爱与被爱。愿时光慢一些，让我能多陪陪您。</p>
   <p class="date" id="dateDisplay"></p>
+  
+  <!-- Music Control -->
+  <button id="musicBtn" class="music-btn" aria-label="Toggle music">
+    <span id="musicIcon">🎵</span>
+  </button>
+  <audio id="bgMusic" loop>
+    <source src="Sacred Play Secret Place.mp3" type="audio/mpeg">
+  </audio>
 </section>
 
 <script>
@@ -680,6 +743,50 @@ button, a, .candle-wrapper, .wish-card, .gallery-item { -webkit-user-select: non
   const now = new Date();
   const str = now.getFullYear() + '年' + (now.getMonth()+1) + '月' + now.getDate() + '日';
   document.getElementById('dateDisplay').textContent = '🎀 ' + str + ' · 永远记得这一天 🎀';
+})();
+
+/* ================================================================
+   Background Music
+   ================================================================ */
+(function() {
+  const musicBtn = document.getElementById('musicBtn');
+  const musicIcon = document.getElementById('musicIcon');
+  const bgMusic = document.getElementById('bgMusic');
+  let isPlaying = false;
+
+  if (!musicBtn || !bgMusic) return;
+
+  musicBtn.addEventListener('click', async () => {
+    try {
+      if (isPlaying) {
+        bgMusic.pause();
+        isPlaying = false;
+        musicBtn.classList.remove('playing');
+        musicIcon.textContent = '🎵';
+      } else {
+        bgMusic.volume = 0.3;
+        await bgMusic.play();
+        isPlaying = true;
+        musicBtn.classList.add('playing');
+        musicIcon.textContent = '🎶';
+      }
+    } catch (e) {
+      console.log('Audio play failed:', e);
+    }
+  });
+
+  bgMusic.addEventListener('ended', () => {
+    if (bgMusic.loop) {
+      bgMusic.currentTime = 0;
+      bgMusic.play().catch(() => {});
+    }
+  });
+
+  bgMusic.addEventListener('error', (e) => {
+    console.log('Audio error:', e);
+    musicBtn.style.opacity = '0.5';
+    musicBtn.title = '音频加载失败';
+  });
 })();
 </script>
 
