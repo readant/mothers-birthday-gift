@@ -602,7 +602,7 @@ button, a, .candle-wrapper, .wish-card, .gallery-item { -webkit-user-select: non
   
   <!-- Music Control -->
   <button id="musicBtn" class="music-btn" aria-label="Toggle music">
-    <span id="musicIcon">🎵</span>
+    <span id="musicIcon">&#x1F3B5;</span>
   </button>
   <audio id="bgMusic" loop>
     <source src="Sacred Play Secret Place.mp3" type="audio/mpeg">
@@ -883,7 +883,7 @@ button, a, .candle-wrapper, .wish-card, .gallery-item { -webkit-user-select: non
       isPlaying = true;
       if (musicBtn) {
         musicBtn.classList.add('playing');
-        musicIcon.textContent = '�';
+        musicIcon.textContent = '\uD83C\uDFB6';
       }
     } catch (e) {
       console.log('Audio play failed:', e);
@@ -896,7 +896,7 @@ button, a, .candle-wrapper, .wish-card, .gallery-item { -webkit-user-select: non
       isPlaying = false;
       if (musicBtn) {
         musicBtn.classList.remove('playing');
-        musicIcon.textContent = '�';
+        musicIcon.textContent = '\uD83C\uDFB5';
       }
     } catch (e) {
       console.log('Audio pause failed:', e);
