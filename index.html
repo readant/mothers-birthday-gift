@@ -138,13 +138,14 @@ section {
   position: relative;
   width: clamp(50px, 12vw, 60px); 
   height: clamp(110px, 25vw, 140px);
-  background: linear-gradient(90deg, #f5e6d3 0%, #faf0e6 30%, #f5e6d3 70%, #e8d5c0 100%);
+  background: linear-gradient(90deg, #f0d8a8 0%, #faf0e6 30%, #f5deb3 70%, #e8d5c0 100%);
   border-radius: 8px 8px 4px 4px;
   box-shadow: 0 4px 20px rgba(0,0,0,.3), inset 0 -40px 30px rgba(0,0,0,.08);
+  z-index: 10;
 }
 .candle::after { /* wax drip */
   content: ''; position: absolute; top: -10px; left: 10px; width: 10px; height: 16px;
-  background: #f5e6d3; border-radius: 50% 50% 30% 30%; box-shadow: 16px -3px 0 #faf0e6, -6px -5px 0 #faf0e6;
+  background: #f5deb3; border-radius: 50% 50% 30% 30%; box-shadow: 16px -3px 0 #faf0e6, -6px -5px 0 #f0d8a8;
 }
 
 /* Wick */
@@ -180,123 +181,10 @@ section {
   background: radial-gradient(ellipse at 50% 20%, #fff 0%, #aaddff 30%, transparent 70%);
   border-radius: 50%;
 }
+
 /* Flame out state */
-.flame.out { transform: translateX(-50%) scale(0); opacity: 0; }
+.flame.out { transform: translateX(-50%) scaleY(0); opacity: 0; }
 .flame-glow.out { opacity: 0; }
-.wick.out { opacity: 0; }
-
-/* Birthday Set */
-.birthday-set {
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  gap: clamp(1rem, 5vw, 2rem);
-}
-.cake-container {
-  display: flex;
-  align-items: flex-end;
-}
-.candle-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-/* Cake */
-.cake {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.cake-top {
-  position: relative;
-  width: clamp(40px, 10vw, 50px);
-  height: clamp(15px, 3vw, 20px);
-  background: linear-gradient(180deg, #f8e4d0 0%, #e8d4c0 100%);
-  border-radius: 50% 50% 0 0;
-  margin-bottom: -2px;
-}
-.cherry {
-  position: absolute;
-  width: clamp(10px, 2.5vw, 14px);
-  height: clamp(10px, 2.5vw, 14px);
-  background: radial-gradient(circle at 30% 30%, #ff6b8a 0%, #c43d5a 100%);
-  border-radius: 50%;
-  top: -6px;
-  left: 50%;
-  transform: translateX(-50%);
-  animation: bounce 2s ease-in-out infinite;
-}
-.cherry::after {
-  content: '';
-  position: absolute;
-  top: -4px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 2px;
-  height: 6px;
-  background: #5a3d2b;
-}
-.cherry-2 {
-  left: 25%;
-  animation-delay: 0.5s;
-}
-.cake-layer {
-  position: relative;
-  width: clamp(60px, 14vw, 75px);
-  height: clamp(25px, 6vw, 32px);
-  background: linear-gradient(180deg, #d4a853 0%, #c49a4a 50%, #b48c40 100%);
-  border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0,0,0,.2);
-}
-.cake-layer.layer-1 {
-  width: clamp(50px, 12vw, 65px);
-  margin-bottom: -2px;
-}
-.cake-layer .frosting {
-  position: absolute;
-  top: 0;
-  left: -2px;
-  right: -2px;
-  height: clamp(8px, 2vw, 10px);
-  background: linear-gradient(90deg, #f5e6d3 0%, #faf0e6 50%, #f5e6d3 100%);
-  border-radius: 4px 4px 0 0;
-}
-.cake-layer .decoration {
-  position: absolute;
-  font-size: clamp(0.7rem, 2vw, 0.9rem);
-  top: 50%;
-  transform: translateY(-50%);
-  animation: float 3s ease-in-out infinite;
-}
-.cake-layer .decoration:nth-child(2) { left: 8px; }
-.cake-layer .decoration-2 { 
-  left: 50%; 
-  transform: translate(-50%, -50%); 
-  animation-delay: 0.3s;
-}
-.cake-layer .decoration-3 { 
-  right: 8px; 
-  animation-delay: 0.6s;
-}
-.cake-plate {
-  width: clamp(80px, 18vw, 100px);
-  height: clamp(8px, 2vw, 10px);
-  background: linear-gradient(180deg, #e8e8e8 0%, #c8c8c8 100%);
-  border-radius: 50%;
-  box-shadow: 0 3px 8px rgba(0,0,0,.2);
-  margin-top: 4px;
-}
-
-@keyframes bounce {
-  0%, 100% { transform: translateX(-50%) translateY(0); }
-  50% { transform: translateX(-50%) translateY(-3px); }
-}
-@keyframes float {
-  0%, 100% { transform: translateY(-50%); }
-  50% { transform: translateY(-60%); }
-}
 
 /* Smoke */
 .smoke-container { position: absolute; top: -45px; left: 50%; pointer-events: none; }
@@ -314,6 +202,189 @@ section {
 @keyframes flicker {
   0%   { transform: translateX(-50%) scale(1,.98) rotate(-1deg); }
   100% { transform: translateX(-50%) scale(.9,1.05) rotate(1deg); }
+}
+
+/* ====== Cake ====== */
+.cake-container {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  margin-top: -15px;
+}
+
+.cake {
+  position: relative;
+  width: clamp(120px, 30vw, 180px);
+  height: clamp(100px, 25vw, 140px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Cake top */
+.cake-top {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 30px;
+  background: linear-gradient(180deg, #f8e4c9 0%, #f5deb3 100%);
+  border-radius: 50% 50% 0 0;
+  z-index: 10;
+}
+
+.candle-holder {
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 10px;
+  background: linear-gradient(90deg, #d4a853 0%, #f5c87a 50%, #d4a853 100%);
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,.2);
+}
+
+/* Cherries */
+.cherry {
+  position: absolute;
+  font-size: clamp(0.8rem, 3vw, 1.2rem);
+  animation: bounce 2s ease-in-out infinite;
+}
+
+.cherry-1 { top: -8px; left: 15%; animation-delay: 0s; }
+.cherry-2 { top: -5px; right: 20%; animation-delay: 0.5s; }
+.cherry-3 { top: -3px; left: 50%; transform: translateX(-50%); animation-delay: 1s; }
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+/* Sprinkles */
+.sprinkle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.sprinkle-1 { top: 8px; left: 25%; background: #c4547a; }
+.sprinkle-2 { top: 12px; right: 30%; background: #d4a853; }
+.sprinkle-3 { top: 5px; right: 45%; background: #ff6b8a; }
+.sprinkle-4 { top: 15px; left: 40%; background: #9b59b6; }
+
+/* Cake layers */
+.cake-layer {
+  position: relative;
+  width: 100%;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.2);
+}
+
+.layer-top {
+  height: 30%;
+  background: linear-gradient(180deg, #faf0e6 0%, #f5deb3 100%);
+  border-radius: 8px 8px 0 0;
+}
+
+.frosting {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  background: linear-gradient(90deg, #fff8f0 0%, #fff 50%, #fff8f0 100%);
+  border-radius: 8px 8px 0 0;
+}
+
+/* Chocolate drips */
+.chocolate-drip {
+  position: absolute;
+  top: 8px;
+  width: 12px;
+  height: 15px;
+  background: linear-gradient(180deg, #3d2314 0%, #2a1a0a 100%);
+  border-radius: 0 0 50% 50%;
+}
+
+.drip-1 { left: 15%; }
+.drip-2 { left: 35%; height: 20px; }
+.drip-3 { right: 30%; height: 18px; }
+.drip-4 { right: 10%; }
+
+.layer-middle {
+  height: 35%;
+  background: linear-gradient(180deg, #f5deb3 0%, #e8d0a8 100%);
+  margin-top: -4px;
+}
+
+.cream-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  background: linear-gradient(90deg, #fff5e6 0%, #fff8f0 50%, #fff5e6 100%);
+}
+
+/* Decorations */
+.decoration {
+  position: absolute;
+  font-size: clamp(0.9rem, 4vw, 1.3rem);
+}
+
+.flower-1 { top: 50%; left: 15%; transform: translateY(-50%); }
+.flower-2 { top: 50%; right: 15%; transform: translateY(-50%); }
+.star-1 { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+
+.layer-bottom {
+  height: 35%;
+  background: linear-gradient(180deg, #e8d0a8 0%, #d4b896 100%);
+  margin-top: -4px;
+  border-radius: 0 0 12px 12px;
+}
+
+.base-decoration {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 10px;
+  background: linear-gradient(90deg, rgba(212,168,83,0.3) 0%, rgba(212,168,83,0.1) 50%, rgba(212,168,83,0.3) 100%);
+  border-radius: 0 0 12px 12px;
+}
+
+/* Sugar pearls */
+.sugar-pearl {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: radial-gradient(circle at 30% 30%, #fff 0%, #f5e6d3 60%, #e8d5c0 100%);
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,.1);
+}
+
+.pearl-1 { top: 30%; left: 10%; }
+.pearl-2 { top: 50%; left: 30%; }
+.pearl-3 { top: 25%; left: 50%; transform: translateX(-50%); }
+.pearl-4 { top: 55%; right: 25%; }
+.pearl-5 { top: 35%; right: 8%; }
+
+/* Cake plate */
+.cake-plate {
+  position: absolute;
+  bottom: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120%;
+  height: 12px;
+  background: linear-gradient(180deg, #f0f0f0 0%, #d0d0d0 50%, #b0b0b0 100%);
+  border-radius: 50%;
+  box-shadow: 0 4px 8px rgba(0,0,0,.2);
 }
 
 /* ====== Wishes ====== */
@@ -635,40 +706,61 @@ button, a, .candle-wrapper, .wish-card, .gallery-item { -webkit-user-select: non
 <!-- ========== Candle ========== -->
 <section id="candle-section">
   <div class="candle-wrapper" id="candleWrapper">
-    <div class="birthday-set">
-      <div class="cake-container">
-        <div class="cake">
-          <div class="cake-top">
-            <div class="cherry"></div>
-            <div class="cherry cherry-2"></div>
-          </div>
-          <div class="cake-layer layer-1">
-            <div class="frosting"></div>
-            <div class="decoration">🍓</div>
-            <div class="decoration decoration-2">🌸</div>
-            <div class="decoration decoration-3">🍓</div>
-          </div>
-          <div class="cake-layer layer-2">
-            <div class="frosting"></div>
-            <div class="decoration">🌺</div>
-            <div class="decoration decoration-2">🎀</div>
-            <div class="decoration decoration-3">🌺</div>
-          </div>
-          <div class="cake-plate"></div>
+    <div class="flame-glow" id="flameGlow"></div>
+    <div class="flame" id="flame">
+      <div class="outer"></div>
+      <div class="inner"></div>
+    </div>
+    <div class="wick"></div>
+    <div class="candle"></div>
+    <div class="smoke-container" id="smokeContainer"></div>
+    
+    <!-- Cake -->
+    <div class="cake-container">
+      <div class="cake">
+        <!-- Cake top decoration -->
+        <div class="cake-top">
+          <div class="candle-holder"></div>
+          <div class="cherry cherry-1">🍒</div>
+          <div class="cherry cherry-2">🍓</div>
+          <div class="cherry cherry-3">🍑</div>
+          <div class="sprinkle sprinkle-1"></div>
+          <div class="sprinkle sprinkle-2"></div>
+          <div class="sprinkle sprinkle-3"></div>
+          <div class="sprinkle sprinkle-4"></div>
         </div>
-      </div>
-      <div class="candle-container">
-        <div class="flame-glow" id="flameGlow"></div>
-        <div class="flame" id="flame">
-          <div class="outer"></div>
-          <div class="inner"></div>
+        
+        <!-- Cake layers -->
+        <div class="cake-layer layer-top">
+          <div class="frosting"></div>
+          <div class="chocolate-drip drip-1"></div>
+          <div class="chocolate-drip drip-2"></div>
+          <div class="chocolate-drip drip-3"></div>
+          <div class="chocolate-drip drip-4"></div>
         </div>
-        <div class="wick"></div>
-        <div class="candle"></div>
-        <div class="smoke-container" id="smokeContainer"></div>
+        
+        <div class="cake-layer layer-middle">
+          <div class="cream-fill"></div>
+          <div class="decoration flower-1">🌸</div>
+          <div class="decoration flower-2">🌺</div>
+          <div class="decoration star-1">⭐</div>
+        </div>
+        
+        <div class="cake-layer layer-bottom">
+          <div class="base-decoration"></div>
+          <div class="sugar-pearl pearl-1"></div>
+          <div class="sugar-pearl pearl-2"></div>
+          <div class="sugar-pearl pearl-3"></div>
+          <div class="sugar-pearl pearl-4"></div>
+          <div class="sugar-pearl pearl-5"></div>
+        </div>
+        
+        <!-- Cake plate -->
+        <div class="cake-plate"></div>
       </div>
     </div>
-    <p class="hint" id="candleHint">🎂 轻轻点击蜡烛，为妈妈送上祝福</p>
+    
+    <p class="hint" id="candleHint">🕯️ 轻轻点击蜡烛，为妈妈吹灭它吧</p>
     <p class="wish-text" id="wishMsg">✨ 愿所有的美好都如期而至 ✨</p>
   </div>
 </section>
