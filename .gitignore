@@ -20,11 +20,5 @@ Thumbs.db
 # Deepseek related
 .deepseek/
 
-# Audio files
-*.mp3
-*.wav
-*.ogg
-*.m4a
-
 # Git
 .git/
