@@ -384,9 +384,129 @@ button, a, .candle-wrapper, .wish-card, .gallery-item { -webkit-user-select: non
   }
 }
 
+/* ====== Splash Screen ====== */
+.splash-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--deep) 0%, var(--mid) 50%, var(--rose) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  transition: opacity 0.8s ease, transform 0.6s ease;
+}
+.splash-screen.fade-out {
+  opacity: 0;
+  transform: scale(0.95);
+  pointer-events: none;
+}
+.splash-content {
+  text-align: center;
+  animation: fadeInUp 1s ease forwards;
+}
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.splash-heart {
+  font-size: clamp(4rem, 15vw, 6rem);
+  animation: heartbeat 1.5s ease-in-out infinite;
+  margin-bottom: 1.5rem;
+}
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+.splash-title {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 8vw, 3.5rem);
+  color: var(--gold);
+  text-shadow: 0 0 30px rgba(212, 168, 83, 0.5);
+  margin-bottom: 0.5rem;
+  animation: fadeInUp 0.8s ease 0.2s forwards;
+  opacity: 0;
+}
+.splash-subtitle {
+  font-size: clamp(1rem, 4vw, 1.5rem);
+  color: var(--pink);
+  margin-bottom: 2rem;
+  animation: fadeInUp 0.8s ease 0.4s forwards;
+  opacity: 0;
+}
+.splash-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  padding: clamp(1rem, 4vw, 1.3rem) clamp(2rem, 8vw, 3rem);
+  font-size: clamp(1.1rem, 4vw, 1.4rem);
+  font-family: var(--font-heading);
+  color: var(--deep);
+  background: linear-gradient(135deg, var(--gold) 0%, #f5c87a 100%);
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(212, 168, 83, 0.4);
+  transition: all 0.3s ease;
+  animation: fadeInUp 0.8s ease 0.6s forwards;
+  opacity: 0;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  min-height: 56px;
+}
+.splash-btn:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(212, 168, 83, 0.5);
+}
+.splash-btn:active {
+  transform: translateY(-2px) scale(0.98);
+}
+.btn-icon {
+  font-size: clamp(1.3rem, 5vw, 1.6rem);
+}
+.btn-text {
+  font-weight: 500;
+}
+.splash-hint {
+  font-size: clamp(0.85rem, 3vw, 1rem);
+  color: var(--cream);
+  opacity: 0.7;
+  margin-top: 1.5rem;
+  animation: fadeInUp 0.8s ease 0.8s forwards;
+  opacity: 0;
+  animation: pulseHint 2s ease-in-out infinite;
+}
+@keyframes pulseHint {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
 </style>
 </head>
 <body>
+
+<!-- Splash Screen -->
+<div id="splash-screen" class="splash-screen">
+  <div class="splash-content">
+    <div class="splash-heart">💝</div>
+    <h2 class="splash-title">亲爱的妈妈</h2>
+    <p class="splash-subtitle">今天是特别的日子</p>
+    <button id="splashBtn" class="splash-btn">
+      <span class="btn-icon">🎁</span>
+      <span class="btn-text">点击开启惊喜</span>
+    </button>
+    <p class="splash-hint">轻轻点击下方按钮</p>
+  </div>
+</div>
 
 <!-- Floating petals canvas -->
 <canvas id="petals"></canvas>
@@ -752,41 +872,68 @@ button, a, .candle-wrapper, .wish-card, .gallery-item { -webkit-user-select: non
   const musicBtn = document.getElementById('musicBtn');
   const musicIcon = document.getElementById('musicIcon');
   const bgMusic = document.getElementById('bgMusic');
+  const splashScreen = document.getElementById('splash-screen');
+  const splashBtn = document.getElementById('splashBtn');
   let isPlaying = false;
 
-  if (!musicBtn || !bgMusic) return;
-
-  musicBtn.addEventListener('click', async () => {
+  async function playMusic() {
     try {
-      if (isPlaying) {
-        bgMusic.pause();
-        isPlaying = false;
-        musicBtn.classList.remove('playing');
-        musicIcon.textContent = '🎵';
-      } else {
-        bgMusic.volume = 0.3;
-        await bgMusic.play();
-        isPlaying = true;
+      bgMusic.volume = 0.3;
+      await bgMusic.play();
+      isPlaying = true;
+      if (musicBtn) {
         musicBtn.classList.add('playing');
-        musicIcon.textContent = '🎶';
+        musicIcon.textContent = '�';
       }
     } catch (e) {
       console.log('Audio play failed:', e);
     }
-  });
+  }
 
-  bgMusic.addEventListener('ended', () => {
-    if (bgMusic.loop) {
-      bgMusic.currentTime = 0;
-      bgMusic.play().catch(() => {});
+  async function pauseMusic() {
+    try {
+      bgMusic.pause();
+      isPlaying = false;
+      if (musicBtn) {
+        musicBtn.classList.remove('playing');
+        musicIcon.textContent = '�';
+      }
+    } catch (e) {
+      console.log('Audio pause failed:', e);
     }
-  });
+  }
 
-  bgMusic.addEventListener('error', (e) => {
-    console.log('Audio error:', e);
-    musicBtn.style.opacity = '0.5';
-    musicBtn.title = '音频加载失败';
-  });
+  if (splashBtn) {
+    splashBtn.addEventListener('click', async () => {
+      await playMusic();
+      if (splashScreen) {
+        splashScreen.classList.add('fade-out');
+      }
+    });
+  }
+
+  if (musicBtn && bgMusic) {
+    musicBtn.addEventListener('click', async () => {
+      if (isPlaying) {
+        await pauseMusic();
+      } else {
+        await playMusic();
+      }
+    });
+
+    bgMusic.addEventListener('ended', () => {
+      if (bgMusic.loop) {
+        bgMusic.currentTime = 0;
+        bgMusic.play().catch(() => {});
+      }
+    });
+
+    bgMusic.addEventListener('error', (e) => {
+      console.log('Audio error:', e);
+      musicBtn.style.opacity = '0.5';
+      musicBtn.title = '音频加载失败';
+    });
+  }
 })();
 </script>
 
