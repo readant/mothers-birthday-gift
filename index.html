@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=5.0, viewport-fit=cover">
+<title>生日快乐 · 亲爱的妈妈</title>
+<style>
+/* ====== Reset & Variables ====== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --deep:    #1a0a2e;
+  --mid:     #3d1a4a;
+  --rose:    #8b3a62;
+  --warm:    #c4547a;
+  --gold:    #d4a853;
+  --cream:   #fff5e6;
+  --pink:    #ffb3c6;
+  --white:   #ffffff;
+  --font-heading: 'STKaiti','KaiTi','楷体','STSong','SimSun',serif;
+  --font-body:    'PingFang SC','Microsoft YaHei','Hiragino Sans GB','Noto Sans SC',sans-serif;
+  --touch-target-min: 44px;
+}
+
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body {
+  font-family: var(--font-body);
+  background: var(--deep);
+  color: var(--cream);
+  overflow-x: hidden;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  overscroll-behavior: none;
+}
+
+/* ====== Canvas Petals ====== */
+#petals {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 0;
+  contain: strict;
+}
+
+/* ====== Sections ====== */
+section {
+  position: relative; z-index: 1;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: clamp(2rem, 5vw, 3rem) clamp(1rem, 3vw, 1.5rem);
+}
+
+/* ====== Hero ====== */
+#hero {
+  text-align: center;
+  background: radial-gradient(ellipse at 50% 30%, rgba(196,84,122,.25) 0%, transparent 70%),
+              linear-gradient(180deg, var(--deep) 0%, var(--mid) 40%, var(--rose) 100%);
+}
+#hero .sub { 
+  font-size: clamp(1.1rem, 3.5vw, 2rem); 
+  color: var(--pink); 
+  letter-spacing: .2em; 
+  opacity: 0; 
+  animation: fadeUp .8s .3s forwards; 
+  padding: 0 0.5rem;
+}
+#hero h1 { 
+  font-family: var(--font-heading); 
+  font-size: clamp(2.2rem, 9vw, 5rem); 
+  color: var(--gold); 
+  text-shadow: 0 0 40px rgba(212,168,83,.4); 
+  margin: .3em 0; 
+  opacity: 0; 
+  animation: scaleIn .7s .8s forwards; 
+  word-wrap: break-word;
+  max-width: 100%;
+}
+#hero .typewriter { 
+  font-size: clamp(0.9rem, 2.5vw, 1.3rem); 
+  color: var(--cream); 
+  min-height: 2em; 
+  opacity: 0; 
+  animation: fadeUp .6s 1.5s forwards; 
+  padding: 0 1rem;
+  max-width: 100%;
+}
+#hero .cursor { display: inline-block; width: 2px; height: 1.1em; background: var(--gold); vertical-align: text-bottom; animation: blink .6s infinite; margin-left: 2px; }
+#hero .scroll-hint { position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%); opacity: 0; animation: fadeUp .6s 3s forwards; }
+#hero .scroll-hint span { display: block; width: 22px; height: 22px; border-right: 2px solid var(--gold); border-bottom: 2px solid var(--gold); transform: rotate(45deg); margin: 0 auto; animation: bounceDown 1.5s infinite; }
+
+@keyframes fadeUp   { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes scaleIn  { from { opacity: 0; transform: scale(.7); } to { opacity: 1; transform: scale(1); } }
+@keyframes blink    { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+@keyframes bounceDown { 0%,100% { transform: rotate(45deg) translate(-4px,-4px); } 50% { transform: rotate(45deg) translate(4px,4px); } }
+
+/* ====== Candle Section ====== */
+#candle-section {
+  background: radial-gradient(ellipse at 50% 50%, rgba(212,168,83,.12) 0%, transparent 60%),
+              linear-gradient(180deg, var(--rose) 0%, var(--mid) 50%, var(--deep) 100%);
+}
+.candle-wrapper { 
+  position: relative; 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  cursor: pointer; 
+  user-select: none; 
+  -webkit-tap-highlight-color: transparent;
+  min-height: var(--touch-target-min);
+  padding: 1rem;
+  touch-action: manipulation;
+}
+.candle-wrapper .hint { 
+  margin-top: 1.5rem; 
+  font-size: clamp(0.9rem, 2.5vw, 1rem); 
+  color: var(--cream); 
+  opacity: .7; 
+  transition: opacity .5s;
+  text-align: center;
+  padding: 0 0.5rem;
+}
+.candle-wrapper .wish-text { 
+  margin-top: 0.8rem; 
+  font-family: var(--font-heading); 
+  font-size: clamp(1.1rem, 3.5vw, 1.4rem); 
+  color: var(--gold); 
+  opacity: 0; 
+  transform: translateY(10px); 
+  transition: all .6s;
+  text-align: center;
+  padding: 0 0.5rem;
+}
+.candle-wrapper .wish-text.show { opacity: 1; transform: translateY(0); }
+
+/* Candle body */
+.candle {
+  position: relative;
+  width: clamp(50px, 12vw, 60px); 
+  height: clamp(110px, 25vw, 140px);
+  background: linear-gradient(90deg, #f5e6d3 0%, #faf0e6 30%, #f5e6d3 70%, #e8d5c0 100%);
+  border-radius: 8px 8px 4px 4px;
+  box-shadow: 0 4px 20px rgba(0,0,0,.3), inset 0 -40px 30px rgba(0,0,0,.08);
+}
+.candle::after { /* wax drip */
+  content: ''; position: absolute; top: -10px; left: 10px; width: 10px; height: 16px;
+  background: #f5e6d3; border-radius: 50% 50% 30% 30%; box-shadow: 16px -3px 0 #faf0e6, -6px -5px 0 #faf0e6;
+}
+
+/* Wick */
+.wick {
+  position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
+  width: 3px; height: 14px; background: #2a1a0a; border-radius: 1px;
+}
+
+/* Flame + glow */
+.flame-glow {
+  position: absolute; top: -55px; left: 50%; transform: translateX(-50%);
+  width: 70px; height: 70px;
+  background: radial-gradient(circle, rgba(255,180,40,.35) 0%, rgba(255,140,20,.1) 40%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  transition: opacity .6s;
+}
+.flame {
+  position: absolute; top: -42px; left: 50%; transform: translateX(-50%);
+  width: 24px; height: 36px;
+  animation: flicker .15s infinite alternate;
+  transition: transform .4s ease-out, opacity .4s;
+}
+.flame .outer {
+  position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 22px; height: 32px;
+  background: radial-gradient(ellipse at 60% 30%, #fff 0%, #ffdd55 25%, #ff9900 60%, #cc4400 100%);
+  border-radius: 40% 60% 20% 20% / 70% 80% 10% 10%;
+}
+.flame .inner {
+  position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%);
+  width: 10px; height: 15px;
+  background: radial-gradient(ellipse at 50% 20%, #fff 0%, #aaddff 30%, transparent 70%);
+  border-radius: 50%;
+}
+
+/* Flame out state */
+.flame.out { transform: translateX(-50%) scaleY(0); opacity: 0; }
+.flame-glow.out { opacity: 0; }
+
+/* Smoke */
+.smoke-container { position: absolute; top: -45px; left: 50%; pointer-events: none; }
+.smoke {
+  position: absolute; width: 5px; height: 5px;
+  background: rgba(180,180,190,.5); border-radius: 50%;
+  animation: smokeRise 1.5s ease-out forwards;
+  opacity: 0;
+}
+@keyframes smokeRise {
+  0%   { opacity: .6; transform: translate(0,0) scale(1); }
+  100% { opacity: 0;   transform: translate(var(--sx), -50px) scale(3); }
+}
+
+@keyframes flicker {
+  0%   { transform: translateX(-50%) scale(1,.98) rotate(-1deg); }
+  100% { transform: translateX(-50%) scale(.9,1.05) rotate(1deg); }
+}
+
+/* ====== Wishes ====== */
+#wishes {
+  background: linear-gradient(180deg, var(--deep) 0%, var(--mid) 50%, var(--rose) 100%);
+  gap: 1.5rem;
+}
+#wishes h2 { font-family: var(--font-heading); font-size: clamp(1.6rem, 5vw, 2rem); color: var(--gold); margin-bottom: .3rem; text-align: center; }
+.wish-cards { display: flex; flex-wrap: wrap; gap: 1.2rem; justify-content: center; max-width: 900px; width: 100%; }
+.wish-card {
+  background: rgba(255,255,255,.06); backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,.1); border-radius: 16px;
+  padding: clamp(1.2rem, 4vw, 2rem) clamp(1rem, 3vw, 1.8rem); 
+  width: 240px; 
+  text-align: center;
+  opacity: 0; transform: translateY(30px);
+  transition: transform .3s, box-shadow .3s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.wish-card.visible { opacity: 1; transform: translateY(0); }
+.wish-card:hover { transform: translateY(-6px); box-shadow: 0 12px 32px rgba(0,0,0,.25); }
+.wish-card:active { transform: translateY(-3px) scale(0.98); }
+.wish-card .icon { font-size: clamp(2rem, 6vw, 2.5rem); margin-bottom: .5rem; }
+.wish-card h3 { font-family: var(--font-heading); font-size: clamp(1rem, 3vw, 1.2rem); color: var(--gold); margin-bottom: .5rem; }
+.wish-card p { font-size: clamp(0.85rem, 2.5vw, .9rem); color: var(--cream); opacity: .85; line-height: 1.6; }
+
+/* ====== Gallery ====== */
+#gallery {
+  background: linear-gradient(180deg, var(--rose) 0%, var(--mid) 50%, var(--deep) 100%);
+  gap: 1.5rem;
+}
+#gallery h2 { font-family: var(--font-heading); font-size: clamp(1.6rem, 5vw, 2rem); color: var(--gold); text-align: center; }
+.gallery-grid { 
+  display: grid; 
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); 
+  gap: clamp(0.8rem, 2vw, 1.2rem); 
+  max-width: 800px; 
+  width: 100%;
+}
+.gallery-item {
+  aspect-ratio: 1 / 1;
+  border-radius: 14px; overflow: hidden;
+  position: relative; cursor: default;
+  opacity: 0; transform: translateY(30px);
+  transition: transform .4s, opacity .6s, box-shadow .3s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.gallery-item.visible { opacity: 1; transform: translateY(0); }
+.gallery-item:hover { transform: scale(1.04); box-shadow: 0 10px 30px rgba(0,0,0,.3); }
+.gallery-item:active { transform: scale(0.98); }
+.gallery-item .bg {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center; flex-direction: column;
+  font-size: clamp(2.2rem, 7vw, 3rem);
+}
+.gallery-item .label {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: clamp(0.4rem, 1.5vw, .5rem); text-align: center;
+  background: linear-gradient(transparent, rgba(0,0,0,.55));
+  font-size: clamp(0.75rem, 2.2vw, .85rem); color: var(--cream);
+}
+
+/* ====== Footer ====== */
+#footer {
+  background: radial-gradient(ellipse at 50% 80%, rgba(196,84,122,.2) 0%, transparent 60%),
+              linear-gradient(180deg, var(--deep) 0%, #0d0518 100%);
+  text-align: center; gap: 1rem; min-height: 60vh;
+}
+#footer h2 { font-family: var(--font-heading); font-size: clamp(1.6rem, 6vw, 3.2rem); color: var(--gold); text-align: center; }
+#footer .love { font-size: clamp(1rem, 3vw, 1.2rem); color: var(--pink); opacity: .9; }
+#footer .date { font-size: clamp(0.8rem, 2.5vw, .9rem); color: var(--cream); opacity: .6; margin-top: 0.8rem; }
+#footer p[style] { font-size: clamp(0.85rem, 2.5vw, 1rem); text-align: center; padding: 0 0.5rem; }
+
+/* ====== Responsive ====== */
+@media (max-width: 600px) {
+  .wish-cards { flex-direction: column; align-items: center; }
+  .wish-card { width: 90%; max-width: 320px; }
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 380px) {
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
+  .wish-card { width: 95%; padding: 1rem; }
+  #hero h1 { font-size: clamp(2rem, 10vw, 3rem); }
+}
+
+@media (min-width: 768px) {
+  .gallery-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .wish-card:hover { transform: none; box-shadow: none; }
+  .gallery-item:hover { transform: none; box-shadow: none; }
+  .wish-card:active { transform: translateY(-3px) scale(0.98); box-shadow: 0 8px 24px rgba(0,0,0,.25); }
+  .gallery-item:active { transform: scale(0.96); box-shadow: 0 8px 24px rgba(0,0,0,.3); }
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  section { min-height: auto; padding: 1.5rem 1rem; }
+  #hero h1 { font-size: clamp(1.5rem, 5vh, 2.5rem); }
+  .candle { width: 45px; height: 100px; }
+  .flame { top: -35px; }
+  .flame-glow { top: -45px; width: 60px; height: 60px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (min-width: 601px) and (max-width: 1024px) {
+  .wish-card { width: 200px; }
+  .gallery-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (hover: hover) {
+  .wish-card:hover { transform: translateY(-6px); box-shadow: 0 12px 32px rgba(0,0,0,.25); }
+  .gallery-item:hover { transform: scale(1.04); box-shadow: 0 10px 30px rgba(0,0,0,.3); }
+}
+
+* { -webkit-tap-highlight-color: rgba(255,255,255,0.1); }
+button, a, .candle-wrapper, .wish-card, .gallery-item { -webkit-user-select: none; user-select: none; }
+
+</style>
+</head>
+<body>
+
+<!-- Floating petals canvas -->
+<canvas id="petals"></canvas>
+
+<!-- ========== Hero ========== -->
+<section id="hero">
+  <p class="sub">给 我 最 爱 的 人</p>
+  <h1>🎂 生日快乐 🎂</h1>
+  <p class="typewriter"><span id="typed"></span><span class="cursor" id="cursor"></span></p>
+  <div class="scroll-hint"><span></span></div>
+</section>
+
+<!-- ========== Candle ========== -->
+<section id="candle-section">
+  <div class="candle-wrapper" id="candleWrapper">
+    <div class="flame-glow" id="flameGlow"></div>
+    <div class="flame" id="flame">
+      <div class="outer"></div>
+      <div class="inner"></div>
+    </div>
+    <div class="wick"></div>
+    <div class="candle"></div>
+    <div class="smoke-container" id="smokeContainer"></div>
+    <p class="hint" id="candleHint">🕯️ 轻轻点击蜡烛，为妈妈吹灭它吧</p>
+    <p class="wish-text" id="wishMsg">✨ 愿所有的美好都如期而至 ✨</p>
+  </div>
+</section>
+
+<!-- ========== Wishes ========== -->
+<section id="wishes">
+  <h2>💝 心中祝福</h2>
+  <div class="wish-cards">
+    <div class="wish-card" data-delay="0">
+      <div class="icon">🌸</div>
+      <h3>健康美丽</h3>
+      <p>愿您永远健康、美丽，笑口常开，岁月从不败美人。</p>
+    </div>
+    <div class="wish-card" data-delay="150">
+      <div class="icon">💖</div>
+      <h3>感恩有您</h3>
+      <p>感谢您无私的付出和无尽的爱，您是我生命中最温暖的光。</p>
+    </div>
+    <div class="wish-card" data-delay="300">
+      <div class="icon">🌟</div>
+      <h3>温柔以待</h3>
+      <p>愿岁月温柔待您，您永远是我心中最美、最了不起的女人。</p>
+    </div>
+    <div class="wish-card" data-delay="450">
+      <div class="icon">🏡</div>
+      <h3>永远爱您</h3>
+      <p>妈妈，生日快乐！无论走多远，我永远爱您，永远在您身边。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== Gallery ========== -->
+<section id="gallery">
+  <h2>📷 温暖记忆</h2>
+  <div class="gallery-grid">
+    <div class="gallery-item" data-delay="0">
+      <div class="bg" style="background:linear-gradient(135deg,#f9d5e5,#eeac99)">🌸</div>
+      <div class="label">春天的温暖</div>
+    </div>
+    <div class="gallery-item" data-delay="100">
+      <div class="bg" style="background:linear-gradient(135deg,#a8d8ea,#aa96da)">☀️</div>
+      <div class="label">夏日的陪伴</div>
+    </div>
+    <div class="gallery-item" data-delay="200">
+      <div class="bg" style="background:linear-gradient(135deg,#f6cd61,#e89f71)">🍂</div>
+      <div class="label">秋天的关怀</div>
+    </div>
+    <div class="gallery-item" data-delay="300">
+      <div class="bg" style="background:linear-gradient(135deg,#c3cfe2,#b8d4e3)">❄️</div>
+      <div class="label">冬日的怀抱</div>
+    </div>
+    <div class="gallery-item" data-delay="400">
+      <div class="bg" style="background:linear-gradient(135deg,#f8b195,#f67280)">💝</div>
+      <div class="label">无私的爱</div>
+    </div>
+    <div class="gallery-item" data-delay="500">
+      <div class="bg" style="background:linear-gradient(135deg,#d4a5a5,#9b7b9c)">🌟</div>
+      <div class="label">永远的港湾</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== Footer ========== -->
+<section id="footer">
+  <p class="love">❤️</p>
+  <h2>妈妈，我永远爱您</h2>
+  <p style="color:var(--cream);opacity:.8;max-width:500px;margin-top:.5rem">谢谢您把我带到这个世界，用一生的温柔教会我爱与被爱。愿时光慢一些，让我能多陪陪您。</p>
+  <p class="date" id="dateDisplay"></p>
+</section>
+
+<script>
+/* ================================================================
+   Petal Canvas
+   ================================================================ */
+(function() {
+  const canvas = document.getElementById('petals');
+  const ctx = canvas.getContext('2d');
+  let petals = [];
+  let W, H;
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const colors = ['#ffb3c6','#ffd1dc','#ffc0cb','#ffe4e1','#ffccd5','#f8c8d8','#ffd4a8','#ffe0b2'];
+
+  class Petal {
+    constructor() {
+      this.reset(true);
+    }
+    reset(init) {
+      this.x = Math.random() * W;
+      this.y = init ? Math.random() * H : -20;
+      this.size = 5 + Math.random() * 16;
+      this.speedY = 0.4 + Math.random() * 1.4;
+      this.speedX = -0.4 + Math.random() * 0.8;
+      this.rotation = Math.random() * Math.PI * 2;
+      this.rotSpeed = (Math.random() - 0.5) * 0.03;
+      this.opacity = 0.3 + Math.random() * 0.5;
+      this.color = colors[Math.floor(Math.random() * colors.length)];
+      this.swing = Math.random() * 40;
+      this.swingSpeed = 0.01 + Math.random() * 0.02;
+      this.swingOffset = Math.random() * Math.PI * 2;
+    }
+    update() {
+      this.y += this.speedY;
+      this.x += this.speedX + Math.sin(this.swingOffset + this.y * 0.02) * 0.3;
+      this.rotation += this.rotSpeed;
+      if (this.y > H + 30) this.reset(false);
+      if (this.x < -30) this.x = W + 30;
+      if (this.x > W + 30) this.x = -30;
+    }
+    draw(ctx) {
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.rotation);
+      ctx.globalAlpha = this.opacity;
+      ctx.fillStyle = this.color;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, this.size * 0.5, this.size * 0.25, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.ellipse(this.size * 0.15, 0, this.size * 0.35, this.size * 0.2, 0.3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  let sparkles = [];
+  class Sparkle {
+    constructor() {
+      this.reset(true);
+    }
+    reset(init) {
+      this.x = Math.random() * W;
+      this.y = init ? Math.random() * H : -10;
+      this.size = 1 + Math.random() * 3;
+      this.speedY = 0.2 + Math.random() * 0.8;
+      this.opacity = Math.random();
+      this.fade = 0.005 + Math.random() * 0.015;
+      this.phase = Math.random() * Math.PI * 2;
+    }
+    update() {
+      this.y += this.speedY;
+      this.opacity -= this.fade;
+      this.phase += 0.05;
+      if (this.y > H + 10 || this.opacity <= 0) this.reset(false);
+    }
+    draw(ctx) {
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, this.opacity);
+      ctx.fillStyle = '#ffd700';
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  const isMobile = W < 768;
+  const petalCount = isMobile ? 25 : 55;
+  const sparkleCount = isMobile ? 15 : 30;
+
+  for (let i = 0; i < petalCount; i++) petals.push(new Petal());
+  for (let i = 0; i < sparkleCount; i++) sparkles.push(new Sparkle());
+
+  function animate() {
+    ctx.clearRect(0, 0, W, H);
+    petals.forEach(p => { p.update(); p.draw(ctx); });
+    sparkles.forEach(s => { s.update(); s.draw(ctx); });
+    requestAnimationFrame(animate);
+  }
+  animate();
+})();
+
+/* ================================================================
+   Typewriter
+   ================================================================ */
+(function() {
+  const el = document.getElementById('typed');
+  const cursor = document.getElementById('cursor');
+  const lines = [
+    '亲爱的妈妈，今天是您的生日 🎂',
+    '愿时光善待您，愿幸福常伴左右 💕',
+    '您陪我长大，我陪您变老 🌸',
+    '—— 永远爱您的孩子'
+  ];
+  let lineIdx = 0, charIdx = 0, isDeleting = false;
+  const typeSpeed = 70, deleteSpeed = 35, pauseEnd = 2000, pauseAfterDelete = 400;
+
+  function tick() {
+    const currentLine = lines[lineIdx];
+    if (!isDeleting) {
+      charIdx++;
+      el.textContent = currentLine.substring(0, charIdx);
+      if (charIdx === currentLine.length) {
+        if (lineIdx === lines.length - 1) {
+          cursor.style.display = 'inline-block';
+          return;
+        }
+        setTimeout(() => { isDeleting = true; tick(); }, pauseEnd);
+        return;
+      }
+      setTimeout(tick, typeSpeed);
+    } else {
+      charIdx--;
+      el.textContent = currentLine.substring(0, charIdx);
+      if (charIdx === 0) {
+        isDeleting = false;
+        lineIdx++;
+        setTimeout(tick, pauseAfterDelete);
+        return;
+      }
+      setTimeout(tick, deleteSpeed);
+    }
+  }
+  setTimeout(tick, 2000);
+})();
+
+/* ================================================================
+   Candle Interaction
+   ================================================================ */
+(function() {
+  const wrapper = document.getElementById('candleWrapper');
+  const flame = document.getElementById('flame');
+  const glow = document.getElementById('flameGlow');
+  const smokeCtr = document.getElementById('smokeContainer');
+  const hint = document.getElementById('candleHint');
+  const wish = document.getElementById('wishMsg');
+  let lit = true;
+
+  function playChime(freq, dur) {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.setValueAtTime(freq, ctx.currentTime);
+      gain.gain.setValueAtTime(0.15, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + dur);
+    } catch(e) { /* audio not critical */ }
+  }
+
+  function spawnSmoke() {
+    for (let i = 0; i < 8; i++) {
+      const s = document.createElement('div');
+      s.className = 'smoke';
+      s.style.left = (Math.random() * 20 - 10) + 'px';
+      s.style.animationDelay = (i * 0.08) + 's';
+      s.style.setProperty('--sx', (Math.random() * 30 - 15) + 'px');
+      smokeCtr.appendChild(s);
+      setTimeout(() => s.remove(), 1600);
+    }
+  }
+
+  wrapper.addEventListener('click', () => {
+    if (lit) {
+      flame.classList.add('out');
+      glow.classList.add('out');
+      spawnSmoke();
+      hint.textContent = '🕯️ 愿望已许下...再次点击重新点燃';
+      wish.classList.add('show');
+      playChime(600, 0.6);
+      lit = false;
+    } else {
+      flame.classList.remove('out');
+      glow.classList.remove('out');
+      hint.textContent = '🕯️ 轻轻点击蜡烛，为妈妈吹灭它吧';
+      wish.classList.remove('show');
+      playChime(900, 0.4);
+      lit = true;
+    }
+  });
+})();
+
+/* ================================================================
+   Scroll-triggered animations (Intersection Observer)
+   ================================================================ */
+(function() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const delay = parseInt(el.dataset.delay) || 0;
+        setTimeout(() => el.classList.add('visible'), delay);
+        observer.unobserve(el);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  document.querySelectorAll('.wish-card, .gallery-item').forEach(el => observer.observe(el));
+
+  const candleObs = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      const flame = document.getElementById('flame');
+      const glow = document.getElementById('flameGlow');
+      const wish = document.getElementById('wishMsg');
+      const hint = document.getElementById('candleHint');
+      if (flame.classList.contains('out')) {
+        flame.classList.remove('out');
+        glow.classList.remove('out');
+        wish.classList.remove('show');
+        hint.textContent = '🕯️ 轻轻点击蜡烛，为妈妈吹灭它吧';
+      }
+    }
+  }, { threshold: 0.3 });
+  const candleEl = document.getElementById('candle-section');
+  if (candleEl) candleObs.observe(candleEl);
+})();
+
+/* ================================================================
+   Footer date
+   ================================================================ */
+(function() {
+  const now = new Date();
+  const str = now.getFullYear() + '年' + (now.getMonth()+1) + '月' + now.getDate() + '日';
+  document.getElementById('dateDisplay').textContent = '🎀 ' + str + ' · 永远记得这一天 🎀';
+})();
+</script>
+
+</body>
+</html>
